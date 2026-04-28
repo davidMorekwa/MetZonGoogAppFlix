@@ -3,7 +3,7 @@
 This repository contains **Terraform** configuration to setup my homelab environment. The homelab is designed to simulate modern enterprise detection and response. By bridging a cloud-based Security Operations Center (SOC) with a local-area network (LAN) via a Zero-Trust mesh (Tailscale), this project provides a realistic environment for both offensive and defensive security operations.
 
 
-## 🏹 Architecture Overview
+## Architecture Overview
 This is a **Hybrid-Cloud** deployment. While the SIEM is hosted on Linode, the primary "Battlefield" resides on a local area network (LAN).
 
 - **Cloud SOC:** A Linode instance running Wazuh (SIEM/XDR) in Docker.
@@ -13,14 +13,14 @@ This is a **Hybrid-Cloud** deployment. While the SIEM is hosted on Linode, the p
     - **Admin:** A local admin machine with access to the cloud SIEM
 - **The Bridge:** Tailscale creates an encrypted overlay network, allowing local LAN devices to ship logs to the Cloud SOC without opening any firewall ports on the home router.
 
-## 🛠 Features
+## Features
 - **Zero Public Surface:** Linode firewalls are set to `DROP` all inbound traffic. Access is granted only via encrypted Tailscale tunnels.
 - **Infrastructure as Code:** - Automated Wazuh installation via Linode StackScripts.
     - Identity-based access control via Tailscale ACLs (HCL-based).
 - **Network IDS/IPS:** The victim machines i.e. windows and linux, should have suricata installed for network security monitoring
 - **Stealth Monitoring:** Managed through Tailscale Tags, allowing for "Rogue Device" simulation where the attacker is unmanaged but the victims are monitored.
 
-## 🚀 Deployment
+## Deployment
 
 ### Prerequisites
 ### Prerequisites
@@ -57,13 +57,13 @@ This is a **Hybrid-Cloud** deployment. While the SIEM is hosted on Linode, the p
    1. Check your Tailscale Admin console for the `wazuh` node.
    2. From the admin machine web browser, visit [wazuh](https://wazuh) and login with the default credentials `admin:SecretPassword`. **MAKE SURE YOU CHANGE THESE DEFAULT CREDENTIALS**
 
-## 🔐 Networking & Security Policy
+## Networking & Security Policy
 The project uses `reset_acl_on_destroy = true` to ensure clean lifecycle management. The ACL policy is strictly enforced:
 - `tag:admin` has full access to all nodes.
 - `tag:victim` can only communicate with the SIEM on ports `1514/1515`.
 - `tag:attacker` is allowed to interact with `tag:victim` but is blocked from the `tag:soc`.
 
-## 🧹 Cleanup
+## Cleanup
 To tear down the entire lab:
 ```bash
 terraform destroy
