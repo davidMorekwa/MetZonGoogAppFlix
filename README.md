@@ -32,8 +32,8 @@ This is a **Hybrid-Cloud** deployment. While the SIEM is hosted on Linode, the p
 ### Instructions
 1. **Clone the repo:**
    ```bash
-   git clone https://github.com/your-username/stealth-siem-lab.git
-   cd stealth-siem-lab
+   git clone https://github.com/davidMorekwa/MetZonGoogAppFlix.git
+   cd MetZonGoogAppFlix
    ```
 
 2. **Initialize Variables:**
