@@ -1,6 +1,6 @@
 
 data "linode_sshkey" "my_key" {
-  label = "openvas"
+  label = "openvas" # <-- may use a ssh already existing on linode or create a new one. Reference: https://registry.terraform.io/providers/linode/linode/latest/docs/resources/sshkey
 }
 
 resource "linode_stackscript" "my_script" {

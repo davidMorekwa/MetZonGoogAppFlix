@@ -1,16 +1,10 @@
 # devices
-data "tailscale_device" "linux_victim" {
-    name = "victim.taila3159b.ts.net"
-}
-data "tailscale_device" "linux_attacker" {
-    name = "kali.taila3159b.ts.net"
-}
-data "tailscale_device" "windows_victim" {
-    name = "windows.taila3159b.ts.net"
-}
-data "tailscale_device" "macos" {
-    name = "macos.taila3159b.ts.net"
-}
+# after installing the tailscale client, add the devices here using:
+# data "tailscale_device" "linux_victim" {
+#     name = "device-fqdn"
+# }
+# reference: https://registry.terraform.io/providers/tailscale/tailscale/latest/docs/data-sources/device
+
 
 resource "tailscale_acl" "homelab_acl" {
     acl = jsonencode({
@@ -46,29 +40,17 @@ resource "tailscale_acl" "homelab_acl" {
                 "action"= "accept"
                 "src"= ["tag:admin"] 
                 "dst"= ["tag:soc", "tag:victim"]
-                "users"= ["root", "david", "kali"]
+                "users"= ["root", "david", "kali"] # <-- change to users with remote login allowed on the victim and attacker machines, and cloud VM
             },
         ] 
     })
     reset_acl_on_destroy = true
 }
 
-#apply tags to devices
+# uncomment the block below to apply tags to devices. Reference: https://registry.terraform.io/providers/tailscale/tailscale/latest/docs/resources/device_tags
 # resource "tailscale_device_tags" "linux_victim_tag" {
 #     device_id = data.tailscale_device.linux_victim.node_id
 #     tags = ["tag:victim"]
-# }
-# resource "tailscale_device_tags" "windows_victim_tag" {
-#     device_id = data.tailscale_device.windows_victim.node_id
-#     tags = ["tag:victim"]
-# }
-# resource "tailscale_device_tags" "macos_admin_tag" {
-#     device_id = data.tailscale_device.macos.node_id
-#     tags = ["tag:admin"]
-# }
-# resource "tailscale_device_tags" "kali_attacker_tag" {
-#     device_id = data.tailscale_device.linux_attacker.node_id
-#     tags = ["tag:attacker"]
 # }
 
 resource "tailscale_tailnet_key" "wazuh_key" {
