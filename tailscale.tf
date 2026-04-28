@@ -16,9 +16,9 @@ resource "tailscale_acl" "homelab_acl" {
     acl = jsonencode({
         "tagOwners" = {
             "tag:attacker" = [var.tailscale_tag_owner]
-            "tag:victim" = [var.tailscale_tag_owner] # target 
+            "tag:victim" = [var.tailscale_tag_owner] # target machines
             "tag:admin" = [var.tailscale_tag_owner]
-            "tag:soc" = ["davidMorekwa@github"] # wazuh 
+            "tag:soc" = [var.tailscale_tag_owner] # wazuh 
         }
         "grants" = [
             {
