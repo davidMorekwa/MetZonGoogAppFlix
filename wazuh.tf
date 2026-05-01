@@ -1,6 +1,6 @@
 
 data "linode_sshkey" "my_key" {
-  label = "openvas" # <-- may use a ssh already existing on linode or create a new one. Reference: https://registry.terraform.io/providers/linode/linode/latest/docs/resources/sshkey
+  label = "openvas" # <-- may use a ssh already existing on or create a new one. Reference: https://registry.terraform.io/providers/linode/linode/latest/docs/resources/sshkey
 }
 
 resource "linode_stackscript" "my_script" {
@@ -51,9 +51,15 @@ apt install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker
 
 echo 'Installing wazuh docker container'
 
-git clone https://github.com/davidMorekwa/wazuh-docker.git -b v4.14.4
+git clone https://github.com/wazuh/wazuh-docker.git -b v4.14.5
 docker compose -f wazuh-docker/single-node/generate-indexer-certs.yml run --rm generator
 docker compose -f wazuh-docker/single-node/docker-compose.yml up -d
+echo 'setup custom auditd decoder'
+docker compose exec -f wazuh-docker/single-node/docker-compose.yml -it wazuh.manager curl https://raw.githubusercontent.com/davidMorekwa/wazuh-docker/refs/heads/main/single-node/auditd_custom_decoder.xml -o /wazuh-config-mount/etc/0040-auditd_decoders.xml
+docker compose exec -f wazuh-docker/single-node/docker-compose.yml -it wazuh.manager cp /wazuh-config-mount/etc/0040-auditd_decoders.xml /var/ossec/ruleset/decoders/
+echo 'setup custom detection rules'
+docker compose exec -f wazuh-docker/single-node/docker-compose.yml -it wazuh.manager curl https://raw.githubusercontent.com/davidMorekwa/wazuh-docker/refs/heads/main/single-node/local_rules.xml -o /wazuh-config-mount/etc/local_rules.xml
+docker compose exec -f wazuh-docker/single-node/docker-compose.yml -it wazuh.manager cp /wazuh-config-mount/etc/local_rules.xml /var/ossec/etc/rules/
   EOF
   images = ["linode/ubuntu24.04"]
   rev_note = "v1.1" 

@@ -1,9 +1,17 @@
 # devices
-# after installing the tailscale client, add the devices here using:
-# data "tailscale_device" "linux_victim" {
-#     name = "device-fqdn"
-# }
-# reference: https://registry.terraform.io/providers/tailscale/tailscale/latest/docs/data-sources/device
+# after installing the tailscale client, add the devices here. Reference: https://registry.terraform.io/providers/tailscale/tailscale/latest/docs/data-sources/device
+data "tailscale_device" "linux_victim" {
+    name = "victim.taila3159b.ts.net"
+}
+data "tailscale_device" "windows_victim" {
+    name = "windows.taila3159b.ts.net"
+}
+data "tailscale_device" "kali_attacker" {
+    name = "kali.taila3159b.ts.net"
+}
+data "tailscale_device" "macos_admin" {
+    name = "macos.taila3159b.ts.net"
+}
 
 
 resource "tailscale_acl" "homelab_acl" {
@@ -52,6 +60,18 @@ resource "tailscale_acl" "homelab_acl" {
 #     device_id = data.tailscale_device.linux_victim.node_id
 #     tags = ["tag:victim"]
 # }
+# resource "tailscale_device_tags" "windows_victim_tag" {
+#     device_id = data.tailscale_device.windows_victim.node_id
+#     tags = ["tag:victim"]
+# }
+# resource "tailscale_device_tags" "kali_attacker_tag" {
+#     device_id = data.tailscale_device.kali_attacker.node_id
+#     tags = ["tag:attacker"]
+# }
+# resource "tailscale_device_tags" "macos_admin_tag" {
+#     device_id = data.tailscale_device.macos_admin.node_id
+#     tags = ["tag:admin"]
+# }
 
 resource "tailscale_tailnet_key" "wazuh_key" {
   reusable      = false
@@ -59,7 +79,6 @@ resource "tailscale_tailnet_key" "wazuh_key" {
   ephemeral = true
   tags          = ["tag:soc"]
   description = "Wazuh authentication key"
-  expiry = "72000" # 20hrs
 }
 
 variable "tailscale_tag_owner" {}
