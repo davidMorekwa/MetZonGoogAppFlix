@@ -1,16 +1,16 @@
 # devices
 # after installing the tailscale client, add the devices here. Reference: https://registry.terraform.io/providers/tailscale/tailscale/latest/docs/data-sources/device
 data "tailscale_device" "linux_victim" {
-    name = "victim.taila3159b.ts.net"
+    name = var.linux_device
 }
 data "tailscale_device" "windows_victim" {
-    name = "windows.taila3159b.ts.net"
+    name = var.windows_device
 }
 data "tailscale_device" "kali_attacker" {
-    name = "kali.taila3159b.ts.net"
+    name = var.kali_device
 }
 data "tailscale_device" "macos_admin" {
-    name = "macos.taila3159b.ts.net"
+    name = var.mac_device
 }
 
 
@@ -33,7 +33,7 @@ resource "tailscale_acl" "homelab_acl" {
                 # victim machines communicate with wazuh
                 src = ["tag:victim"]
                 dst = ["tag:soc"]
-                ip = ["tcp:1514", "tcp:1515"]
+                ip = [var.victim_port1, var.victim_port2]
             },
             {
                 # attacker machine able to reach victim
@@ -52,7 +52,8 @@ resource "tailscale_acl" "homelab_acl" {
             },
         ] 
     })
-    reset_acl_on_destroy = true
+    # reset_acl_on_destroy = true
+    overwrite_existing_content = true
 }
 
 # uncomment the block below to apply tags to devices. Reference: https://registry.terraform.io/providers/tailscale/tailscale/latest/docs/resources/device_tags
